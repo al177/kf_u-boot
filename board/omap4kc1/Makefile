@@ -33,9 +33,7 @@ $(LIB):	$(OBJS)
 	$(AR) crv $@ $^
 
 splash.o:
-	ln -s ../../../mydroid/device/ti/blaze/initlogo.rle .
 	$(OBJCOPY) -I binary -O elf32-littlearm -B arm initlogo.rle $@
-	rm -f initlogo.rle
 
 lowbattery.o:
 	$(OBJCOPY) -I binary -O elf32-littlearm -B arm lowbattery.gz $@
