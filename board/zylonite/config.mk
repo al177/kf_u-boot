@@ -1,0 +1,6 @@
+#TEXT_BASE = 0x0
+#TEXT_BASE = 0xa1700000
+#TEXT_BASE = 0xa3080000
+TEXT_BASE = 0xa3008000
+
+BOARDLIBS = drivers/nand/libnand.a

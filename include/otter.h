@@ -1,0 +1,9 @@
+#ifndef __OTTER_H
+#define __OTTER_H
+
+enum {
+	OTTER_LCD_DISPLAY_SPLASH,
+	OTTER_LCD_DISPLAY_LOW_BATT_SCREEN,
+};
+
+#endif
