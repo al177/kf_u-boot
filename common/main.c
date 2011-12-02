@@ -428,16 +428,19 @@ void main_loop (void)
            printf("bootmode = '0x%016X'\n", bootmode);
 
 #if defined(CONFIG_RECOVERYCMD)       
-           if((bootmode & 0xF000) == 0x5000) {
+           if(((bootmode & 0xF000) == 0x5000) ||
+           (twl6030_get_power_button_status() == 0)) {
                 printf("Entering into recovery mode !!! \n");
+				run_command("setgreenled 0", 0);
+				run_command("setamberled 5", 0);
                 s = getenv("recoverycmd");
            }
 #endif
            else {
                 if(bootmode >>12 == 0x8){
                         s = Q_BOOTCOMMAND;
-                }else{
-                        s = getenv ("bootcmd");
+				}else{
+					s = getenv ("bootcmd");
                 }
                 //printf ("==bootmode=%x bootcmd=\"%s\"\n",getbootmode(), s ? s : "<UNDEFINED>");
            }

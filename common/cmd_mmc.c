@@ -41,37 +41,37 @@ typedef struct nvram_t {
 static const struct nvram_t nvram_info[] = {
     {
 	.name = "serial",
-	.offset = 0x40,
+	.offset = 0x0,
 	.size = 16,
     },
     {
 	.name = "mac",
-	.offset = 0x01,
+	.offset = 0x30,
 	.size = 12,
     },
     {
 	.name = "sec",
-	.offset = 0x00,
+	.offset = 0x40,
 	.size = 20,
     },
     {
 	.name = "pcbsn",
-	.offset = 0x03,
+	.offset = 0x60,
 	.size = 16,
     },
     {
 	.name = "bootmode",
-	.offset = 0x0006,
+	.offset = 0x1000,
 	.size = 16,
     },
     {
 	.name = "postmode",
-	.offset = 0x2060,
+	.offset = 0x1010,
 	.size = 16,
     },
     {
 	.name = "bootcounter",
-	.offset = 0x2040,
+	.offset = 0x1020,
 	.size = 16,
     },
     {
