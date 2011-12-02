@@ -429,7 +429,7 @@ void main_loop (void)
 
 #if defined(CONFIG_RECOVERYCMD)       
            if(((bootmode & 0xF000) == 0x5000) ||
-           (twl6030_get_power_button_status() == 0)) {
+			(fastboot_wait_power_button_abort == 1)) {
                 printf("Entering into recovery mode !!! \n");
 				run_command("setgreenled 0", 0);
 				run_command("setamberled 5", 0);

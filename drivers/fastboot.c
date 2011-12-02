@@ -42,7 +42,6 @@
 
 #include <asm/io.h>
 #include <i2c.h>
-#include <twl6030.h>
 
 #if defined(CONFIG_FASTBOOT)
 
@@ -50,6 +49,8 @@
 #define USBOTGHS_CONTROL 0x4A00233C
 #define OTG_SYSCONFIG 0x4A0AB404
 #define OTG_SYSSTATUS 0x4A0AB408
+
+unsigned int fastboot_wait_power_button_abort = 0;
 
 #include "usb_debug_macros.h"
 
@@ -1290,21 +1291,24 @@ start_recovery:
 #endif
 #endif
 //Michael 0426
-    val = getbootmode();
-	if((0x4002 == val) || (0x4003 == val)){
-		//printf("\n Entering FASTBOOT ...\n");
-		return 1;
-	}
-//gpio_52 set configuration to MUX3 and INPUT_ENABLE
-__raw_writew(0x10B,0x4A100078);
-udelay(100000); /* 1 sec */
-
-//gpio_52 read GPIO_DATAIN
-	if(__raw_readl(0x48055138) & 0x00100000){
-		printf("\nSPECIAL USB CABLE DETECTED: enter FASTBOOT now\n");
-		return 1;
-	}
-	return 0;
+//    val = getbootmode();
+//	if((0x4002 == val) || (0x4003 == val)){
+//		//printf("\n Entering FASTBOOT ...\n");
+//		return 1;
+//	}
+////gpio_52 set configuration to MUX3 and INPUT_ENABLE
+//__raw_writew(0x10B,0x4A100078);
+//udelay(100000); /* 1 sec */
+//
+////gpio_52 read GPIO_DATAIN
+//	if(__raw_readl(0x48055138) & 0x00100000){
+//		printf("\nSPECIAL USB CABLE DETECTED: enter FASTBOOT now\n");
+//		return 1;
+//	}
+//	return 0;
+//
+	fastboot_wait_power_button_abort = 0;
+	return 1; // always enter fastboot, delay gets us out
 }
 
 int fastboot_init(struct cmd_fastboot_interface *interface) 

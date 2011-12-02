@@ -62,6 +62,7 @@
 #include <common.h>
 #include <command.h>
 
+extern unsigned int fastboot_wait_power_button_abort;
 
 /* Use this as the scratchpad memory to communicate
  * to bootloader from kernel for warm-reset cases

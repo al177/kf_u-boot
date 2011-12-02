@@ -62,6 +62,7 @@
 #include <fastboot.h>
 #include <sparse.h>
 #include <environment.h>
+#include <twl6030.h>
 
 #if (CONFIG_FASTBOOT)
 
@@ -1453,7 +1454,9 @@ int do_fastboot (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 		ret = 0;
 		val = getbootmode();
 		/* On disconnect or error, polling returns non zero */
-		if((0x4003 == val) && !(__raw_readl(0x48055138) & 0x00100000)){
+		/* Always delay for fastboot unless we're in bootmode 4002 
+		 * or using the "factory" cable */
+		if((0x4002 != val) && !(__raw_readl(0x48055138) & 0x00100000)){
 			while (fastboot_countdown)
 			{
 	            if (!fastboot_confirmed) {
@@ -1461,6 +1464,16 @@ int do_fastboot (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
                 }
 				if (fastboot_poll())
 					break;
+				/* if we're holding down the button to get into
+				 * recovery, don't wait for the fastboot timeout so we don't
+				 * accidentally power off.  short circuit 49999/50000 times
+				 * through to keep from overwhelming the twl6030 */
+
+				if (!(fastboot_countdown % 50000) &&
+						(0 == twl6030_get_power_button_status())) {
+					fastboot_wait_power_button_abort = 1;
+					break;
+				}
 			}
 		}else{
 			while (1)
@@ -1473,6 +1486,7 @@ int do_fastboot (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 
 	/* Reset the board specific support */
 	fastboot_shutdown();
+	/* If we're in 4003, go on to OMAP boot over USB */
 	if(0x4003 == val){
         printf ("setting boot sequence first to USB.\nreboot...\n");
         set_SWBootingCfg();		
