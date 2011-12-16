@@ -86,10 +86,14 @@ static volatile u32 *peri_dma_count	= (volatile u32 *) OMAP_USB_DMA_COUNT_CH(DMA
 /* This is the TI USB vendor id */
 //#define DEVICE_VENDOR_ID  0x0451
 /* This is the Lab USB vendor id */
-#define DEVICE_VENDOR_ID  0x1949
+//#define DEVICE_VENDOR_ID  0x1949
+/* This is the Google USB vendor id.  30 fastboots agree. */
+#define DEVICE_VENDOR_ID	0x18d1
 /* This is just made up.. */
 //#define DEVICE_PRODUCT_ID 0xD022
-#define DEVICE_PRODUCT_ID 0x0006
+//#define DEVICE_PRODUCT_ID 0x0006
+#define DEVICE_PRODUCT_ID CONFIG_FIREFIREFIRE_VERSIONID
+
 #define DEVICE_BCD        0x0100;
 
 /* This is used to get the serial number */

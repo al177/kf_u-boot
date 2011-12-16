@@ -27,6 +27,8 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#define CONFIG_FIREFIREFIRE_VERSIONID	0x0100 // v1.0
+
 /*
  * High Level Configuration Options
  */
