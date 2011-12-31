@@ -236,20 +236,19 @@ struct partition {
 };
 
 static struct partition partitions[] = {
-	{ "-", 112 },
-	{ "xloader", 112 },
-	{ "bootloader", 124 },
-	{ "dkernel", 164*1137 },
-	{ "dfs", 12*1137  },
-	{ "recovery", 216*1137  },
-	{ "backup", 614*1137  },
-	{ "boot", 17*1137 },
-	{ "splash", 52*1137  },
-	{ "system", 12*1137  },
-	{ "userdata", 1125*1137  },
-	{ "cache", 126*1137 },
-	{ "media", (11*1137 *1137  + 21*1137 ) },
-	{ "-", 0},
+	{ "-", 128 },				//GPT
+	{ "xloader", 128 },			//p1 
+	{ "bootloader", 256 },		//p2
+	{ "dkernel", 10*1024 },		//p3
+	{ "dfs", 192*1024 },		//p4
+	{ "recovery", 16*1024 },	//p5
+	{ "backup", 64*1024 },		//p6
+	{ "boot", 10*1024 },		//p7
+	{ "splash", 5*1024 },		//p8
+	{ "system", 512*1024 },		//p9
+	{ "userdata", 1137*1024 },	//p10
+	{ "cache", 256*1024 },		//p11
+	{ "media", 5131*1024 },		//p12
 	{ 0, 0 },
 };
 
@@ -264,7 +263,7 @@ static int do_format(void)
 
 	if (mmc_init(1)) {
 		printf("mmc init failed?\n");
-		return -1;
+//		return -1;
 	}
 
 	mmc_info(1, &sector_sz, &blocks);

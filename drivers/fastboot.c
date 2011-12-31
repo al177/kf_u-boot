@@ -92,7 +92,7 @@ static volatile u32 *peri_dma_count	= (volatile u32 *) OMAP_USB_DMA_COUNT_CH(DMA
 /* This is just made up.. */
 //#define DEVICE_PRODUCT_ID 0xD022
 //#define DEVICE_PRODUCT_ID 0x0006
-#define DEVICE_PRODUCT_ID CONFIG_FIREFIREFIRE_VERSIONID
+#define DEVICE_PRODUCT_ID 0x0100
 
 #define DEVICE_BCD        0x0100;
 
