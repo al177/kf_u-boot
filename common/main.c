@@ -431,8 +431,6 @@ void main_loop (void)
            if(((bootmode & 0xF000) == 0x5000) ||
 			(fastboot_wait_power_button_abort == 1)) {
                 printf("Entering into recovery mode !!! \n");
-				run_command("setgreenled 0", 0);
-				run_command("setamberled 5", 0);
                 s = getenv("recoverycmd");
            }
 #endif

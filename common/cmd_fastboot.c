@@ -1449,6 +1449,7 @@ int do_fastboot (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	if (0 == fastboot_init(&interface))
 	{
 		printf ("Fastboot entered...\n");
+		run_command("setgreenled 50", 0);
 		fastboot_countdown = CFG_FASTBOOT_COUNTDOWN;
 		/* If we got this far, we are a success */
 		ret = 0;

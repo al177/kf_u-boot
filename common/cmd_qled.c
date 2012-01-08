@@ -4,11 +4,11 @@
 #include <asm/io.h>
 #include <twl6030.h>
 
-#define LED_PWM1ON           0x00
-#define LED_PWM1OFF          0x01
+#define LED_PWM1ON           0xBA
+#define LED_PWM1OFF          0xBB
 
-#define LED_PWM2ON		            0x03
-#define LED_PWM2OFF		            0x04
+#define LED_PWM2ON		            0xBD
+#define LED_PWM2OFF		            0xBE
 #define TWL6030_TOGGLE3		        0x92
 
 int do_setgreenled (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
