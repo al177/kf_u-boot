@@ -76,17 +76,17 @@ static const struct nvram_t nvram_info[] = {
     },
     {
 	.name = "lpddr2",
-	.offset = 0x3060,
+	.offset = 0x2000,
 	.size = 16,
     },
     {
 	.name = "emmc",
-	.offset = 0x3050,
+	.offset = 0x2020,
 	.size = 16,
     },
     {
 	.name = "product",
-	.offset = 0x6070,
+	.offset = 0x2040,
 	.size = 16,
     },
 };

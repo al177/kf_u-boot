@@ -237,7 +237,7 @@ static __inline__ int abortboot(int bootdelay)
 #ifdef CONFIG_MENUPROMPT
 	printf(CONFIG_MENUPROMPT, bootdelay);
 #else
-	printf("Hit any key to stop autoboot: %2d ", bootdelay);
+	printf("Hit ESC key to stop autoboot: %2d ", bootdelay);
 #endif
 
 #if defined CONFIG_ZERO_BOOTDELAY_CHECK
@@ -247,9 +247,10 @@ static __inline__ int abortboot(int bootdelay)
 	 */
 	if (bootdelay >= 0) {
 		if (tstc()) {	/* we got a key press	*/
-			(void) getc();  /* consume input	*/
-			puts ("\b\b\b 0");
-			abort = 1; 	/* don't auto boot	*/
+			if ( getc() == 0x1b ) {  /* consume input	*/
+				puts ("\b\b\b 0");
+				abort = 1; 	/* don't auto boot	*/
+			}
 		}
 	}
 #endif
@@ -272,16 +273,19 @@ static __inline__ int abortboot(int bootdelay)
 		/* delay 100 * 10ms */
 		for (i=0; !abort && i<100; ++i) {
 			if (tstc()) {	/* we got a key press	*/
-				abort  = 1;	/* don't auto boot	*/
-				bootdelay = 0;	/* no more delay	*/
 # ifdef CONFIG_MENUKEY
 				menukey = getc();
 # else
-				(void) getc();  /* consume input	*/
+				if ( getc() != 0x1b ) {
+					goto _do_bootdelay_;
+				}
 # endif
+				abort  = 1;	/* don't auto boot	*/
+				bootdelay = 0;	/* no more delay	*/
 				break;
 			}
-			udelay (10000);
+_do_bootdelay_:
+			udelay(10000);
 		}
 
 		printf ("\b\b\b%2d ", bootdelay);

@@ -14,6 +14,7 @@
 #define LOW_BATTERY_CAPACITY_LIMIT 3
 #define LOW_BATTERY_VOLTAGE_LIMIT 3450
 #define LOW_LCD_VOLTAGE_LIMIT 3300
+#define NO_VBUS -2
 #define mdelay(n) ({ unsigned long msec = (n); while (msec--) udelay(1000); })
 int get_bat_temperature();
 int get_bat_voltage();
@@ -277,6 +278,8 @@ void check_low_bat()
                     summit_config_apsd(1);
                 }
                 power_source=summit_detect_usb();
+                if(power_source==NO_VBUS)
+                        goto LOW_BAT_TURN_OFF;
                 if(power_source==2){
                     if(mbid==0){
                         //Need to fixed,this is bug of summit
@@ -296,9 +299,8 @@ void check_low_bat()
                     }
                     if(mbid>=4){  //For DVT
                         input_limit=summit_is_aicl_complete();
-                        while(input_limit==0){
-                            input_limit=summit_is_aicl_complete();
-                        }
+                        if(input_limit==NO_VBUS)
+                            goto LOW_BAT_TURN_OFF;
                         printf("Power:AICL=%d mA\n",input_limit);
                         /* Enter low battery charge loop */
                         if(input_limit>0 && input_limit<=900)
@@ -307,6 +309,7 @@ void check_low_bat()
                 }
             }
         }else{
+LOW_BAT_TURN_OFF:            
             printf("shutdown due to there is weak battery \n");
             if(voltage > LOW_LCD_VOLTAGE_LIMIT){
                 initialize_lcd(OTTER_LCD_DISPLAY_LOW_BATT_SCREEN);
@@ -425,19 +428,25 @@ void summit_config_aicl(int enable,int aicl_thres){
 int summit_is_aicl_complete()
 {
     u8 value,temp=0;
-    int result;
-    smb347_i2c_read_u8(&value,SUMMIT_SMB347_FUNCTIONS);
-    if(IS_AICL_DISABLE(value)){
-        return -1;
-    }
-    smb347_i2c_read_u8(&value,SUMMIT_SMB347_STATUS_REG_E);
-    temp=value;
-    if(AICL_STATUS(temp)){
+    int i,vbus,result;
+    for(i=0;i<=20;i++){
+        smb347_i2c_read_u8(&value,SUMMIT_SMB347_FUNCTIONS);
+        if(IS_AICL_DISABLE(value)){
+            return -1;
+        }
+        smb347_i2c_read_u8(&value,SUMMIT_SMB347_STATUS_REG_E);
         temp=value;
-        printf("AICL Complete ,result=%d \n",aicl_results[AICL_RESULT(temp)]);
-        return aicl_results[AICL_RESULT(value)];
-    }else
-        return 0;
+        if(AICL_STATUS(temp)){
+            temp=value;
+            printf("AICL Complete ,result=%d \n",aicl_results[AICL_RESULT(temp)]);
+            return aicl_results[AICL_RESULT(value)];
+        }
+        vbus=twl6030_get_vbus_status();
+        if(vbus==0){
+            return -2;
+        }
+    }
+    return -1;
 }
 
 void summit_switch_mode(int mode)
@@ -522,7 +531,7 @@ int summit_detect_usb()
 {   
     int value=0;
     int i=0;
-    int usb2phy=0;
+    int usb2phy,vbus=0;
     u8 command=0;
     int mbid=0;
     mbid=get_mbid();
@@ -533,7 +542,7 @@ int summit_detect_usb()
         value=value|6;
         smb347_i2c_write_u8(value,4);
     }
-    for(i=0;i<=200;i++){
+    for(i=0;i<=20;i++){
         smb347_i2c_read_u8(&value,SUMMIT_SMB347_INTSTAT_REG_D);
         smb347_i2c_read_u8(&value,SUMMIT_SMB347_STATUS_REG_D);
         //printf("    Power: STATUS_D=0x%x\n",value);
@@ -543,6 +552,10 @@ int summit_detect_usb()
             break;
         }
         value=-1;
+        vbus=twl6030_get_vbus_status();
+        if(vbus==0){
+            return -2;
+        }
     }
     if(value==-1){
         printf("    Charger: APSD Not running \n");
